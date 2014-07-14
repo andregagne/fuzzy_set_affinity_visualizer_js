@@ -5,13 +5,13 @@
 
   DataSource
   
-  this class is the wrapper for the data source for the visualization.
+  this class is the data source for the visualization.
 
 */
 
 var membershipKey = "memberships", setKey = "set", nameKey = "name";
 
-var DataSource = function (sets){
+function DataSource (sets){
   this.sets = sets;
   this.setMembers = {};
   for( i = 0; i < sets.length; i++){
@@ -32,6 +32,24 @@ DataSource.prototype.getSets = function(){
 }
 
 DataSource.prototype.addMember = function(member) {
+
+  //the following piece is to check for negative membership values.  I don't expect any but they're critical enough.
+  var negatives = [];
+  for( i = 0; i < member[membershipKey].length; i++){
+      if(member[membershipKey][i] < 0) {
+        negatives.push(i + 1);
+      }
+  }  
+  
+  if(negatives.length > 0) {
+    var errorString = "Negative membership(s) in set(s) ";
+    for( i = 0; i < negatives.length - 1; i++) {
+      errorString = errorString + negatives[i] + ", ";
+    }
+    errorString = errorString + negatives[i];
+    throw new Error(errorString);
+  }
+  
   var setIndex = this.getHighestAffinitySet(member);
   
   this.setMembers[this.sets[setIndex]].push(member);  

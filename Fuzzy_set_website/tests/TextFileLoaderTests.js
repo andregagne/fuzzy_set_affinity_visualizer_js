@@ -86,24 +86,23 @@ describe("TextFileLoader", function() {
     });
     
     describe("Should parse the data in the line properly", function() {
-      it("Should return a proper JSON object", function() {
+      it("Should return a proper dataSource object", function() {
         var testData1 = "Names\tGroup1\tGroup2\tGroup3\nDatum1\t0\t0\t0\n";
         //want json data to look like this:
         // {{"sets":["Group1","Group2","Group3"]}, {"members":[{"name":"Datum1"},{"memberships:[0,0,0]}]}}
-        var jsonData = {};
         //set names
         var setArray = ["Group1", "Group2", "Group3"];
-        jsonData["sets"] = setArray;
+        var dataSource = new DataSource(setArray);
+
         //member stuff
         var memberships = [0,0,0];
         var memberData = {};
         memberData["name"] = "Datum1";
         memberData["memberships"] = memberships;
-        var members = [];
-        members.push(memberData);
-        jsonData["members"] = members;
         
-        expect(convertTextFile(testData1)).toEqual(jsonData);
+        dataSource.addMember(memberData);
+        
+        expect(convertTextFile(testData1)).toEqual(dataSource);
       });    
     });
   });

@@ -25,7 +25,7 @@ var END_LINE_CHARS = "\n";
 
 */
 convertTextFile = function(textFileData) {
-  var returnJSON = {};
+  var fileDataSource;
   var lastChar = 0, numLines = 0;   // How much have we already processed?
   
   //check for empty file
@@ -59,7 +59,7 @@ convertTextFile = function(textFileData) {
   
   checkedSetNames.shift();  //remove the "names" column from the headers
   
-  returnJSON["sets"] = checkedSetNames;
+  fileDataSource = new DataSource(checkedSetNames);
 
   var members = [];
   for (var i=1; i<csvLines.length; i++) {
@@ -96,28 +96,34 @@ convertTextFile = function(textFileData) {
         }
       }
       memberObject["memberships"] = membershipValues;
-      members.push(memberObject);
+      fileDataSource.addMember(memberObject);
     } else {
       throw new Error("Too few data points in the file for line " + memberObject["name"] + 
                       " was expecting " + checkedSetNames.length + " but got " + lineData.length);
     }
   }
-  returnJSON["members"] = members;
-  return returnJSON;
+  return fileDataSource;
 }
 
 var convertFileAndLoadVisualization = function (fileData){
   console.log("Converting the file");
-  var jsonData = convertTextFile(fileData);
+  var dataSources = convertTextFile(fileData);
   console.log("loading into the dataViz");
   $("#visualizationSpace").load("visualization_canvas.html", function() {
-    startup(jsonData);
+    startup(dataSources);
   });  
   
 }
 
 var loadFile = function (fileLocation){
     
+    //TODO: add in a file for loading the DataSource file
+    $.ajax({
+      url: dataSourceFileLocation,
+      dataType: "script"
+    });
+    
+    //
     $.ajax({
         type: "GET",
         url: fileLocation,
@@ -126,6 +132,7 @@ var loadFile = function (fileLocation){
      });
 }
 
+var dataSourceFileLocation = "./src/DataSource.js";
 var exampleFileLocation = "../sample_files/Generated_sample_5_Sets_4000_Samples.txt";
 
 window.addEventListener("DOMContentLoaded", loadFile(exampleFileLocation), false);

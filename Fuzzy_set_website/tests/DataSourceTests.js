@@ -23,6 +23,21 @@ describe("Tests DataSource", function() {
       testDataSource.addMember(member1);
       expect(testDataSource.getAllMembers()[0]).toEqual(member1);    
     });  
+    
+    it("should return an error if any of the affinities are negative", function() {
+      member1["memberships"] = [4, 3, -1];
+      expect(function() {testDataSource.addMember(member1)}).toThrow(new Error("Negative membership(s) in set(s) 3"));    
+    });
+      
+    it("should return an error if any of the affinities are negative", function() {
+      member1["memberships"] = [4, -1, 2];
+      expect(function() {testDataSource.addMember(member1)}).toThrow(new Error("Negative membership(s) in set(s) 2"));    
+    });
+    
+    it("should return an error if any of the affinities are negative", function() {
+      member1["memberships"] = [4, -1, -2];
+      expect(function() {testDataSource.addMember(member1)}).toThrow(new Error("Negative membership(s) in set(s) 2, 3"));    
+    });
   });
   
   describe("test helper functions", function() {
@@ -35,6 +50,7 @@ describe("Tests DataSource", function() {
         member1["memberships"] = [2, 3, 3];
         expect(testDataSource.getHighestAffinitySet(member1)).toEqual(1);
       });
+      
     });
     
     describe("getAffinity set tests", function() {
@@ -55,6 +71,10 @@ describe("Tests DataSource", function() {
         testDataSource.addMember(member1);
         testDataSource.addMember(member2);
         expect(testDataSource.getAllMembers()).toEqual([member1, member2]);
+      });
+      
+      it("should return an empty array if there aren't any members", function() {
+        expect(testDataSource.getAllMembers()).toEqual([]);      
       });
     });
   });
