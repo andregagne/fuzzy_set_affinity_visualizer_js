@@ -89,7 +89,7 @@ describe("TextFileLoader", function() {
       it("Should return a proper dataSource object", function() {
         var testData1 = "Names\tGroup1\tGroup2\tGroup3\nDatum1\t0\t0\t0\n";
         //want json data to look like this:
-        // {{"sets":["Group1","Group2","Group3"]}, {"members":[{"name":"Datum1"},{"memberships:[0,0,0]}]}}
+        // {{"sets":["Group1","Group2","Group3"]}, {"members":[{DataSource.nameKey:"Datum1"},{"memberships:[0,0,0]}]}}
         //set names
         var setArray = ["Group1", "Group2", "Group3"];
         var dataSource = new DataSource(setArray);
@@ -97,8 +97,8 @@ describe("TextFileLoader", function() {
         //member stuff
         var memberships = [0,0,0];
         var memberData = {};
-        memberData["name"] = "Datum1";
-        memberData["memberships"] = memberships;
+        memberData[DataSource.nameKey] = "Datum1";
+        memberData[DataSource.membershipKey] = memberships;
         
         dataSource.addMember(memberData);
         

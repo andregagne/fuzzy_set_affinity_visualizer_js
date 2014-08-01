@@ -74,7 +74,7 @@ convertTextFile = function(textFileData) {
       break;
     }   
     
-    memberObject["name"] = lineData.shift();  
+    memberObject[DataSource.nameKey] = lineData.shift();  
     
     if (lineData.length >= checkedSetNames.length) {
       var membershipValues = [];
@@ -82,7 +82,7 @@ convertTextFile = function(textFileData) {
         var membership = parseInt(lineData[j]);
         if(j >= checkedSetNames.length) { //check to see if there are too many items
           if(lineData[j] != "") {//only too many items if it's anything other than blank
-            throw new Error("Too many data points in the file for line " + memberObject["name"]);
+            throw new Error("Too many data points in the file for line " + memberObject[DataSource.nameKey]);
           } 
         } else {     
           //So we know we're good and these will line up with sets
@@ -91,14 +91,14 @@ convertTextFile = function(textFileData) {
           } else if(/^[0-9]+$/.test(lineData[j])) {  //we check to see if it's just an integer
             membershipValues.push(membership);
           } else { //if it's something else we fail it
-            throw new Error("Data in line " + memberObject["name"] + " isn't an integer");
+            throw new Error("Data in line " + memberObject[DataSource.nameKey] + " isn't an integer");
           }
         }
       }
-      memberObject["memberships"] = membershipValues;
+      memberObject[DataSource.membershipKey] = membershipValues;
       fileDataSource.addMember(memberObject);
     } else {
-      throw new Error("Too few data points in the file for line " + memberObject["name"] + 
+      throw new Error("Too few data points in the file for line " + memberObject[DataSource.nameKey] + 
                       " was expecting " + checkedSetNames.length + " but got " + lineData.length);
     }
   }

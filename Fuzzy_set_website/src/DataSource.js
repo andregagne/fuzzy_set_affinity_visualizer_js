@@ -9,7 +9,9 @@
 
 */
 
-var membershipKey = "memberships", setKey = "set", nameKey = "name";
+DataSource.membershipKey = "memberships";
+DataSource.setKey = "set"
+DataSource.nameKey = "name";
 
 function DataSource (sets){
   this.sets = sets;
@@ -20,7 +22,7 @@ function DataSource (sets){
 }
 
 DataSource.prototype.getMembersForSet = function(setName){
-  if(sets.indexOf(setName) < 0 ){
+  if(this.sets.indexOf(setName) < 0 ){
     throw new Error("the set " + setName + " does not exist");
   }
   
@@ -35,8 +37,8 @@ DataSource.prototype.addMember = function(member) {
 
   //the following piece is to check for negative membership values.  I don't expect any but they're critical enough.
   var negatives = [];
-  for( i = 0; i < member[membershipKey].length; i++){
-      if(member[membershipKey][i] < 0) {
+  for( i = 0; i < member[DataSource.membershipKey].length; i++){
+      if(member[DataSource.membershipKey][i] < 0) {
         negatives.push(i + 1);
       }
   }  
@@ -61,7 +63,18 @@ DataSource.prototype.getAffinityForMember = function(member, setName){
     return -1;
   }
   
-  return member[membershipKey][setIndex];
+  return member[DataSource.membershipKey][setIndex];
+}
+
+DataSource.prototype.getAffinityForMemberPct = function(member, setName) {
+  var setIndex = this.sets.indexOf(setName);
+  if(setIndex < 0 ){
+    return -1;
+  }
+  
+  var totalValue = 0; 
+  
+
 }
 
 DataSource.prototype.getHighestAffinitySet = function(member){
@@ -69,7 +82,7 @@ DataSource.prototype.getHighestAffinitySet = function(member){
   var maxSetIndex = -1;
   
   for(i = 0; i <this.sets.length; i++){
-    var affinity = member[membershipKey][i];
+    var affinity = member[DataSource.membershipKey][i];
     if(affinity > maxAffinity){
       maxAffinity = affinity;
       maxSetIndex = i;
